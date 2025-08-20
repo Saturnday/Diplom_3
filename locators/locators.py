@@ -11,8 +11,9 @@ class LoginPageLocators:
     TEXT_RESTORE = (By.XPATH, "//h2[contains(text(), 'Восстановление пароля')]")
     SHOW_PASSWORD = (By.CSS_SELECTOR, "div[class='input__icon input__icon-action'] svg")
     INPUT_NEW_PASSWORD = (By.XPATH, '//input[@name="Введите новый пароль"]')
-    ORDERS_READY = (By.XPATH, "//p[contains(text(),'Готовы:')]")
     PASSWORD = (By.XPATH, '//label[contains(text(), "Пароль")]/parent::div')
+    OVERLAY = (By.CLASS_NAME, "Modal_modal_overlay__x2ZCr")
+    MODAL_OVERLAY = (By.CSS_SELECTOR, "div.Modal_modal_overlay__x2ZCr")
 
 class MainPageLocators:
     BUTTON_CONSTRUCTOR = (By.XPATH, '//p[text()="Конструктор"]')
@@ -27,6 +28,8 @@ class MainPageLocators:
     BUTTON_PROFILE = (By.XPATH, '//p[text()="Личный Кабинет"]')
     BUTTON_ORDER_HISTORY = (By.XPATH, '//a[text()="История заказов"]')
     BUTTON_LOGOUT = (By.XPATH, "//button[contains(text(),'Выход')]")
+    ORDERS_READY = (By.XPATH, "//p[contains(text(),'Готовы:')]")
+    LINK_RESTORE_PASSWORD = (By.XPATH, '//a[text()="Восстановить пароль"]')
 
     BUNS = (By.XPATH, "//span[text()='Булки']")
     # Соусы

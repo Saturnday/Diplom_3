@@ -1,30 +1,9 @@
 import pytest
+import allure
 import requests
 from selenium import webdriver
-from data.data import TestData
 from helpers.generate_a_user import UserData
 
-
-class UserAPI:
-
-    @staticmethod
-    def register_user(user_data):
-        resp = requests.post(TestData.url("api/auth/register"), json=user_data)
-        resp.raise_for_status()
-        return resp
-
-    @staticmethod
-    def login_user(user_data):
-        resp = requests.post(TestData.url("api/auth/login"), json=user_data)
-        resp.raise_for_status()
-        return resp.json()["accessToken"]
-
-    @staticmethod
-    def delete_user(access_token):
-        requests.delete(
-            TestData.url("api/auth/user"),
-            headers={"Authorization": access_token}
-        )
 
 
 @pytest.fixture(params=["chrome", "firefox"])
@@ -34,7 +13,6 @@ def driver(request):
 
     if browser == "chrome":
         options = webdriver.ChromeOptions()
-        #options.add_argument("--window-size=1920,1080")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
         options.add_argument("--disable-blink-features=AutomationControlled")
@@ -67,43 +45,24 @@ def driver(request):
     driver.quit()
 
 
-@pytest.fixture(scope="session")
-def test_user():
-    user_data = UserData.generate_valid_user()
-    UserAPI.register_user(user_data)
-    access_token = UserAPI.login_user(user_data)
-
-    yield {"user_data": user_data, "access_token": access_token}
-
-    UserAPI.delete_user(access_token)
+class UserAPI:
+    @staticmethod
+    @allure.step("Регистрация пользователя через API")
+    def register_user(user_data, base_url):
+        url = f"{base_url}/api/auth/register"
+        payload = {
+            "email": user_data.email,
+            "password": user_data.password,
+            "name": user_data.name
+        }
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        return response.json()
 
 
 @pytest.fixture
-def authorized_driver(driver, test_user):
-    access_token = test_user["access_token"]
-
-    driver.get(TestData.BASE_URL)
-    driver.execute_script(f"""
-        window.localStorage.setItem("accessToken", "{access_token}");
-    """)
-    driver.refresh()
-
-    yield driver
-
-
-@pytest.fixture(scope="session")
-def existing_user_token():
-    user_data = {
-        "email": "new_user_20@yandex.com",
-        "password": "1234567"
-    }
-    return UserAPI.login_user(user_data)
-
-@pytest.fixture
-def existing_user_driver(driver, existing_user_token):
-    driver.get(TestData.BASE_URL)
-    driver.execute_script(f"""
-        window.localStorage.setItem("accessToken", "{existing_user_token}");
-    """)
-    driver.refresh()
-    yield driver
+def new_user(base_url):
+    """Создание и регистрация нового пользователя через API"""
+    user = UserData()
+    UserAPI.register_user(user, base_url)
+    return user

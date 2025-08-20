@@ -101,6 +101,20 @@ class BasePage:
         order_number = self.find_element_with_wait(locator).text.strip()
         return order_number
     
+    def scroll_to_element(self, element):
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+
+    def find_element_with_text(self, locator, text):
+
+        WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element(locator, text))
+        order_in_feed = self.find_element_with_wait(locator).text
+        return order_in_feed
+    
+
+    @allure.step("Ожидание выполнения условия")
+    def wait_for_condition(self, condition, timeout=6):
+        
+        return WebDriverWait(self.driver, timeout).until(condition)
 
 
 

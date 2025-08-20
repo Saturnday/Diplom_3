@@ -1,9 +1,9 @@
+import allure
+from data.data import TestData
 from pages.base_page import BasePage
-from locators.locators import MainPageLocators
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from locators.locators import MainPageLocators
+
 
 
 class MainPage(BasePage):
@@ -16,62 +16,57 @@ class MainPage(BasePage):
         else:
             self.driver.get(self.URL)
 
+    @allure.step("Клик на конструктор заказов")
     def click_constructor_button(self):
         self.find_element_with_wait(MainPageLocators.BUTTON_CONSTRUCTOR)
         self.click_to_element_with_wait(MainPageLocators.BUTTON_CONSTRUCTOR)
 
+    @allure.step("Клик на Заказы")
     def click_order_feed_button(self):
         self.find_element_with_wait(MainPageLocators.BUTTON_ORDER_FEED).click()
 
-
+    @allure.step("Получить колличество заказов")
     def get_order_counter(self, name):
         locator = MainPageLocators.counter_by_ingredient_name(name)
-        element = WebDriverWait(self.driver, 5).until(
-            EC.visibility_of_element_located(locator)
-        )
+        element = self.find_element_with_wait(locator)
         return element.text
-
-
     
+    @allure.step("Клик на кнопку профиля")
     def click_profile_button(self):
         self.find_element_with_wait(MainPageLocators.BUTTON_PROFILE).click()
 
+    @allure.step("Ожидание исчезновения оверлея")
     def wait_for_overlay_to_disappear(self):
         self.wait_for_element_to_disappear(MainPageLocators.OVERLAY)
+
+    def wait_for_overlay_2_to_disappear(self):
+        self.wait_for_element_to_disappear(MainPageLocators.MODAL_OVERLAY)
     
+    @allure.step("Клик на кнопку выхода из аккаунта")
     def click_logout(self):
-        ActionChains(self.driver).move_by_offset(0, 0).click().perform()
-        logout_btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.driver.find_element(*MainPageLocators.BUTTON_LOGOUT))
-        )
-        logout_btn.click()
+        self.click_to_element_with_wait(MainPageLocators.BUTTON_LOGOUT)
     
+    @allure.step("Закрыть модальное окно ингредиента")
     def close_ingredient_modal(self):
         self.click_to_element_with_wait(MainPageLocators.INGREDIENT_MODAL_CLOSE)
         self.wait_for_element_to_disappear(MainPageLocators.INGREDIENT_MODAL)
     
-    
+    @allure.step("Ожидание загрузки списка ингредиентов")
     def wait_for_ingredients_loaded(self, timeout=10):
-        WebDriverWait(self.driver, timeout).until(
-            EC.presence_of_all_elements_located(MainPageLocators.INGREDIENT_LINKS)
-        )
+        self.find_elements_with_wait(MainPageLocators.INGREDIENT_LINKS)
 
-    def scroll_to_element(self, element):
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-            
+    @allure.step("Открыть модальное окно ингредиента")
     def open_ingredient_modal(self, ingredient_name):
         ingredient_locator = (By.XPATH, f"//span[text()='{ingredient_name}']")
-        WebDriverWait(self.driver, 6).until(
-            EC.element_to_be_clickable(ingredient_locator)
-        ).click()
-        return WebDriverWait(self.driver, 6).until(
-            EC.visibility_of_element_located(MainPageLocators.INGREDIENT_MODAL)
-        )
+
+        self.click_to_element_with_wait(ingredient_locator)
+        return self.find_element_with_wait(MainPageLocators.INGREDIENT_MODAL)
 
     def close_ingredient_modal(self):
         self.click_to_element_with_wait(MainPageLocators.INGREDIENT_MODAL_CLOSE)
         self.wait_for_element_to_disappear(MainPageLocators.INGREDIENT_MODAL)
 
+    @allure.step("Добавить ингредиент в конструктор")
     def add_ingredient_to_constructor(self, ingredient_name):
         
         element_from = MainPageLocators.ingredient_by_name(ingredient_name)
@@ -83,7 +78,72 @@ class MainPage(BasePage):
             self.drag_and_drop_element_firefox(element_from, MainPageLocators.ELEMENT_TO)
         else:
             raise ValueError(f"Unsupported browser: {browser}")
-        
+    
+    @allure.step("Клик на кнопку профиля")
     def click_profile_button(self):
         self.click_to_element_with_wait(MainPageLocators.BUTTON_PROFILE, timeout=15)
+
+
+    @allure.step("Проверить, открыта ли страница профиля")
+    def is_profile_page_opened(self, timeout=10):
+        self.wait_for_page_ready(timeout)
+        try:
+            return "profile" in self.driver.current_url or self.find_element_with_wait(MainPageLocators.NAME, timeout=timeout)
+        except Exception:
+            return False
+
+    @allure.step("Проверить, открыта ли страница истории заказов")
+    def is_order_history_page_opened(self, timeout=10):
+        self.wait_for_page_ready(timeout)
+        try:
+            return "order-history" in self.driver.current_url or self.find_element_with_wait(MainPageLocators.ORDERS_READY, timeout=timeout)
+        except Exception:
+            return False
+    
+    @allure.step("Найти элемент: игридиент")
+    def ingredient_found(self):
+        try:
+            self.find_element_with_wait(MainPageLocators.INGREDIENT_ITEM)
+        except Exception:
+            return False
+
+    @allure.step("Найти элемент: счетчик заказов")
+    def find_element_in_order_feed(self):
+        try:
+            self.find_element_with_wait(MainPageLocators.READY_ORDERS_COUNTER)
+        except Exception:
+            return False
+
+    @allure.step("Найти элемент: булки детали")
+    def find_bun_details(self):
+        try:
+            self.find_element_with_wait(MainPageLocators.BUN_DETAILS)
+        except Exception:
+            return False
         
+    @allure.step("")
+    def order_in_process(self):
+        try:
+            self.find_element_with_wait(MainPageLocators.ORDER_IN_PROCESS)
+        except Exception:
+            return False
+        
+    def restore_link_is_displayed(self):
+        restore_link = self.find_element_with_wait(MainPageLocators.LINK_RESTORE_PASSWORD, timeout=10)
+        try:
+            restore_link.is_displayed()
+        except:
+            return False
+
+    
+    def create_an_order(self):
+        self.click_to_element_with_wait(MainPageLocators.LOGIN)
+        self.add_ingredient_to_constructor(TestData.CONSTRUCTOR[1])
+        self.click_to_element_with_wait(MainPageLocators.BUTTON_MAKE_ORDER)
+
+    @allure.step("Ожидание изменения счетчика ингредиента")
+    def wait_for_counter_change(self, ingredient_name, initial_value, timeout=6):
+        return self.wait_for_condition(
+            lambda d: self.get_order_counter(ingredient_name) != initial_value,
+            timeout
+        )
