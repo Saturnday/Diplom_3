@@ -1,6 +1,4 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 class LoginPageLocators:
     INPUT_EMAIL = (By.NAME, "name")
@@ -30,6 +28,7 @@ class MainPageLocators:
     BUTTON_LOGOUT = (By.XPATH, "//button[contains(text(),'Выход')]")
     ORDERS_READY = (By.XPATH, "//p[contains(text(),'Готовы:')]")
     LINK_RESTORE_PASSWORD = (By.XPATH, '//a[text()="Восстановить пароль"]')
+    FEED = (By.CLASS_NAME, 'OrderFeed_orderList__cBvyi')
 
     BUNS = (By.XPATH, "//span[text()='Булки']")
     # Соусы
@@ -49,12 +48,16 @@ class MainPageLocators:
 
     ELEMENT_TO = (By.XPATH, "//span[contains(text(), 'Перетяните булочку сюда')]")
 
-    @staticmethod
-    def ingredient_by_name(name):
+    @classmethod
+    def ingredient_by_name(cls, name):
         return By.XPATH, f"//p[contains(text(), '{name}')]"
     
-    @staticmethod
-    def counter_by_ingredient_name(name):
+    @classmethod
+    def get_ingredient_locator(cls, ingredient_name):
+        return (By.XPATH, f"//span[text()='{ingredient_name}']")
+    
+    @classmethod
+    def counter_by_ingredient_name(cls, name):
         return By.XPATH, (
             f"//p[contains(text(), '{name}')]/ancestor::a"
             f"//p[contains(@class, 'counter_counter__num')]"

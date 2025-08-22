@@ -1,10 +1,8 @@
 import pytest
-import allure
 import requests
 from selenium import webdriver
 from helpers.generate_a_user import UserData
-
-
+from api.user_api import UserAPI
 
 @pytest.fixture(params=["chrome", "firefox"])
 def driver(request):
@@ -45,24 +43,26 @@ def driver(request):
     driver.quit()
 
 
-class UserAPI:
-    @staticmethod
-    @allure.step("Регистрация пользователя через API")
-    def register_user(user_data, base_url):
-        url = f"{base_url}/api/auth/register"
-        payload = {
-            "email": user_data.email,
-            "password": user_data.password,
-            "name": user_data.name
-        }
-        response = requests.post(url, json=payload)
-        response.raise_for_status()
-        return response.json()
+@pytest.fixture
+def new_user():
+    """Создание и регистрация нового пользователя через API"""
+    user = UserData().as_dict()   # make sure UserData can give dict
+    UserAPI.register_user(user)
+    return user
 
+@pytest.fixture(scope="session")
+def existing_user_token():
+    user_data = {
+        "email": "new_user_20@yandex.com",
+        "password": "1234567"
+    }
+    return UserAPI.login_user(user_data)
 
 @pytest.fixture
-def new_user(base_url):
-    """Создание и регистрация нового пользователя через API"""
-    user = UserData()
-    UserAPI.register_user(user, base_url)
-    return user
+def existing_user_driver(driver, existing_user_token):
+    driver.get('https://stellarburgers.nomoreparties.site')
+    driver.execute_script(
+        f'window.localStorage.setItem("accessToken", "{existing_user_token}");'
+    )
+    driver.refresh()
+    yield driver

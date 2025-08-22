@@ -1,7 +1,5 @@
 import allure
 from pages.main_page import MainPage
-from pages.login_page import LoginPage
-
 
 
 @allure.suite("Личный кабинет")
@@ -35,10 +33,11 @@ class TestProfile:
     #!!!!logout button is not clickable within the selenium execution, the locator is correct, but the button itself is always inacive
     @allure.step("Выход из аккаунта - Не работает под селениумом")
     def test_logout(self, existing_user_driver):
-        login_page = LoginPage(existing_user_driver)
-        main_page = MainPage(existing_user_driver)
 
-        login_page.open()
+        driver = existing_user_driver
+        main_page = MainPage(driver)
+
+        main_page.open()
         main_page.click_profile_button()
         main_page.wait_for_page_ready()
         main_page.wait_for_overlay_to_disappear()

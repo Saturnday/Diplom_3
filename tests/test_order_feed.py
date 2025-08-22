@@ -1,6 +1,7 @@
 import allure
+from helpers.orders import ApiMethods
 from pages.orders_feed_page import OrdersFeedPage
-from helpers.orders import get_ingredient_ids, create_order_via_api
+
 
 @allure.suite("Лента заказов (Feed)")
 class TestFeed:
@@ -35,8 +36,8 @@ class TestFeed:
 
         feed.open()
         before = feed.get_total_done_counter()
-        ingredient_ids = get_ingredient_ids()[:2]
-        create_order_via_api(ingredient_ids)
+        ingredient_ids = ApiMethods.get_ingredient_ids()[:2]
+        ApiMethods.create_order_via_api(ingredient_ids)
         feed.open()
         after = feed.get_total_done_counter()
 

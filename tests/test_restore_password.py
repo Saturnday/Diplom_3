@@ -1,7 +1,7 @@
 import allure
 from pages.login_page import LoginPage
 
-@allure.feature("Восстановить пароль")
+@allure.suite("Восстановить пароль")
 class TestRestorePassword:
     
     @allure.step("Переход на страницу восстановления пароля по кнопке ‘Восстановить пароль’")

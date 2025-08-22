@@ -8,7 +8,7 @@ class LoginPage(BasePage):
 
     @allure.step("Открытие страницы логина")
     def open(self):
-        self.driver.get(self.URL)
+        self.open_url(self.URL)
         self.wait_for_page_ready()
 
     @allure.step("Вход в систему с email и паролем")
@@ -19,7 +19,7 @@ class LoginPage(BasePage):
 
     @allure.step("Проверяет, что мы на странице восстановления пароля")
     def is_restore_password_page_opened(self):
-        return "forgot-password" in self.driver.current_url
+        return "forgot-password" in self.get_current_url()
 
     @allure.step("Восстановление пароля по email")
     def restore_password(self, email):
@@ -30,7 +30,7 @@ class LoginPage(BasePage):
         
     @allure.step("Проверем открыта ли страица сброса пароля")
     def is_reset_password_page_opened(self):
-        return "reset-password" in self.driver.current_url
+        return "reset-password" in self.get_current_url()
 
     @allure.step("Переключение видимости поля пароля")
     def toggle_show_password(self, password):
@@ -64,6 +64,7 @@ class LoginPage(BasePage):
         self.find_element_with_wait(LoginPageLocators.BUTTON_LOGIN)
         self.click_to_element_with_wait(LoginPageLocators.BUTTON_LOGIN)
     
+    @allure.step("Клик на: тугл показать пароль")
     def restore_password_show_password(self):
         self.restore_password(TestData.EXISTING_EMAIL)
         self.toggle_show_password(TestData.EXISTING_PASSWORD)

@@ -12,17 +12,15 @@ class TestMain:
     def test_go_to_constructor(self, driver):
         main = MainPage(driver)
         main.open()
-        main.click_constructor_button()
-        
+        main.wait_for_page_ready()
         assert main.ingredient_found()
 
-    @allure.title("Переход по клику на «Лента заказов»")
+    @allure.title("Переход по клику на « Лента заказов»")
     def test_go_to_order_feed(self, driver):
         main = MainPage(driver)
         main.open()
         main.click_order_feed_button()
-
-        assert main.find_element_in_order_feed()
+        assert main.find_element_in_order_feed(MainPageLocators.FEED)
 
     @allure.title("Открытие/закрытие ингридиентов")
     @pytest.mark.parametrize("ingredient_name", TestData.INGREDIENT_NAMES)
