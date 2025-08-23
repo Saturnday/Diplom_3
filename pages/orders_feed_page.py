@@ -1,7 +1,6 @@
 from pages.base_page import BasePage
-from pages.main_page import MainPage
 from data.data import TestData
-from locators.locators import FeedPageLocators, MainPageLocators
+from locators.locators import FeedPageLocators
 import allure
 
 
@@ -45,7 +44,7 @@ class OrdersFeedPage(BasePage):
     
     @allure.step("Перейти в ленту заказов")
     def click_to_feed(self):
-        self.click_to_element_with_wait(MainPageLocators.BUTTON_ORDER_FEED)
+        self.click_to_element_with_wait(FeedPageLocators.BUTTON_ORDER_FEED)
 
     @allure.step("Проверить наличие заказа {my_order} в ленте")
     def find_order_in_feed(self, my_order):

@@ -84,3 +84,4 @@ class FeedPageLocators:
     COUNTER_TODAY_DONE = (By.XPATH, '//p[contains(text(), "Выполнено за сегодня")]/following-sibling::p')
     FEED = (By.CLASS_NAME, 'OrderFeed_orderList__cBvyi')
     IN_WORK_ORDER_NUMBERS = (By.XPATH, "//p[contains(text(), 'В работе')]/following-sibling::ul[2]/li")
+    BUTTON_ORDER_FEED = (By.XPATH, '//p[contains(text(),"Лента Заказов")]')
