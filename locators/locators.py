@@ -85,3 +85,13 @@ class FeedPageLocators:
     FEED = (By.CLASS_NAME, 'OrderFeed_orderList__cBvyi')
     IN_WORK_ORDER_NUMBERS = (By.XPATH, "//p[contains(text(), 'В работе')]/following-sibling::ul[2]/li")
     BUTTON_ORDER_FEED = (By.XPATH, '//p[contains(text(),"Лента Заказов")]')
+
+class GetLocators:
+
+    @staticmethod
+    def ingredient_by_name(name):
+        return By.XPATH, f"//p[contains(text(), '{name}')]"
+    
+    @staticmethod
+    def element_to():
+        return (By.XPATH, "//span[contains(text(), 'Перетяните булочку сюда')]")

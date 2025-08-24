@@ -1,7 +1,6 @@
 import allure
 import requests
 from data.data import TestData
-from selenium.webdriver.common.by import By
 
 BASE_URL = "https://stellarburgers.nomoreparties.site/api"
 
@@ -32,17 +31,7 @@ class ApiMethods:
             raise ValueError(f"Ошибка при создании заказа: {data}")
 
         return data["order"]["number"]
-    
-@allure.story('Locators')
-class GetLocators:
 
-    @staticmethod
-    def ingredient_by_name(name):
-        return By.XPATH, f"//p[contains(text(), '{name}')]"
-    
-    @staticmethod
-    def element_to():
-        return (By.XPATH, "//span[contains(text(), 'Перетяните булочку сюда')]")
     
 
 

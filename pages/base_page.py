@@ -4,7 +4,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 from data.data import TestData
-from helpers.orders import GetLocators
+from locators.locators import GetLocators
 
 import allure
 

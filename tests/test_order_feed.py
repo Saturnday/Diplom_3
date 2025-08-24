@@ -6,7 +6,7 @@ from pages.orders_feed_page import OrdersFeedPage
 @allure.suite("Лента заказов (Feed)")
 class TestFeed:
 
-    @allure.step("Клик по заказу открывает модальное окно")
+    @allure.title("Клик по заказу открывает модальное окно")
     def test_order_modal_open(self, existing_user_driver):
         driver = existing_user_driver
 
@@ -16,7 +16,7 @@ class TestFeed:
         modal = feed.wait_for_order_modal()
         assert modal is not None
 
-    @allure.step("Заказы пользователя отображаются в ленте заказов")
+    @allure.title("Заказы пользователя отображаются в ленте заказов")
     def test_user_orders_in_feed(self, existing_user_driver):
         driver = existing_user_driver
         feed = OrdersFeedPage(driver)
@@ -29,7 +29,7 @@ class TestFeed:
 
 
 
-    @allure.step("При создании нового заказа увеличивается общий счётчик 'Выполнено'")
+    @allure.title("При создании нового заказа увеличивается общий счётчик 'Выполнено'")
     def test_total_done_counter_increases(self, authorized_driver):
         driver = authorized_driver
         feed = OrdersFeedPage(driver)
@@ -44,7 +44,7 @@ class TestFeed:
         assert after >= before
 
 
-    @allure.step("При создании нового заказа увеличивается счётчик 'Выполнено сегодня'")
+    @allure.title("При создании нового заказа увеличивается счётчик 'Выполнено сегодня'")
     def test_today_done_counter_increases(self, existing_user_driver):
         driver = existing_user_driver
         feed = OrdersFeedPage(driver)
@@ -58,7 +58,7 @@ class TestFeed:
 
         assert after > before
 
-    @allure.step("Добавление заказа показывает заказ в 'В работе'")
+    @allure.title("Добавление заказа показывает заказ в 'В работе'")
     def test_order_number_in_work_section(self, existing_user_driver):
         driver = existing_user_driver
         feed = OrdersFeedPage(driver)
